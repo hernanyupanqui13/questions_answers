@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // server.ts is the entry point, so Next.js is used as a library
+  // No standalone server from Next itself
 };
 
 export default nextConfig;

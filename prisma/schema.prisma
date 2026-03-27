@@ -1,0 +1,51 @@
+// Prisma schema for Q&A rooms app
+// Uses sqlite for local dev, postgresql in production.
+// To switch provider: update the `provider` field, run `prisma generate` + `prisma migrate deploy`
+// NOTE: SQLite doesn't support native enums; status is stored as String with app-level validation.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite" // Change to "postgresql" for production (Render)
+  url      = env("DATABASE_URL")
+}
+
+model Room {
+  id           String     @id @default(cuid())
+  roomId       String     @unique // human-readable slug, e.g. "abc-123"
+  passwordHash String
+  title        String
+  description  String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  questions    Question[]
+}
+
+model Question {
+  id          String     @id @default(cuid())
+  roomId      String
+  room        Room       @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  content     String
+  authorToken String     // anonymous browser token
+  // status values: PENDING | APPROVED | REJECTED | ARCHIVED
+  status      String     @default("PENDING")
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  votes       Vote[]
+
+  @@index([roomId, status])
+}
+
+model Vote {
+  id         String   @id @default(cuid())
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  voterToken String   // anonymous browser token
+  createdAt  DateTime @default(now())
+
+  // Enforce one vote per question per browser
+  @@unique([questionId, voterToken])
+  @@index([questionId])
+}
