@@ -16,9 +16,9 @@ import type {
   VotePayload,
   ModeratePayload,
   UpdateRoomPayload,
-} from "@/types/index";
-import { prisma } from "@/lib/prisma";
-import { verifyAdminToken } from "@/lib/auth";
+} from "./src/types/index";
+import { prisma } from "./src/lib/prisma";
+import { verifyAdminToken } from "./src/lib/auth";
 
 const dev = process.env.NODE_ENV !== "production";
 const port = parseInt(process.env.PORT ?? "3000", 10);
