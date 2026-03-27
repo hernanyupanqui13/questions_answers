@@ -1,8 +1,14 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { nanoid } from "@/lib/nanoid";
+
+/** GET /api/rooms — Health check */
+export async function GET() {
+  return NextResponse.json({ status: "ok" });
+}
 
 const createRoomSchema = z.object({
   title: z.string().min(1).max(120),
